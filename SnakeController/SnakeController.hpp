@@ -13,6 +13,18 @@ class IPort;
 
 namespace Snake
 {
+
+    struct Segment
+    {
+        int x;
+        int y;
+    };
+
+	struct Body : std::list<Segment>
+	{
+	};
+
+
 struct ConfigurationError : std::logic_error
 {
     ConfigurationError();
@@ -41,13 +53,8 @@ private:
     std::pair<int, int> m_mapDimension;
     std::pair<int, int> m_foodPosition;
 
-    struct Segment
-    {
-        int x;
-        int y;
-    };
 
-    std::list<Segment> m_segments;
+    Body m_body;
     Direction m_currentDirection;
 
     void handleTimeoutInd();

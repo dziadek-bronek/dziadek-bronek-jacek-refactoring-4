@@ -55,7 +55,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
         while (length--) {
             Segment seg;
             istr >> seg.x >> seg.y;
-            m_segments.push_back(seg);
+            m_body.push_back(seg);
         }
     } else {
         throw ConfigurationError();
@@ -64,7 +64,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
 
 bool Controller::isSegmentAtPosition(int x, int y) const
 {
-    return m_segments.end() !=  std::find_if(m_segments.cbegin(), m_segments.cend(),
+    return m_body.end() !=  std::find_if(m_body.cbegin(), m_body.cend(),
         [x, y](auto const& segment){ return segment.x == x and segment.y == y; });
 }
 
@@ -119,9 +119,9 @@ bool perpendicular(Direction dir1, Direction dir2)
 }
 } // namespace
 
-Controller::Segment Controller::calculateNewHead() const
+Segment Controller::calculateNewHead() const
 {
-    Segment const& currentHead = m_segments.front();
+    Segment const& currentHead = m_body.front();
 
     Segment newHead;
     newHead.x = currentHead.x + (isHorizontal(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
@@ -132,7 +132,7 @@ Controller::Segment Controller::calculateNewHead() const
 
 void Controller::removeTailSegment()
 {
-    auto tail = m_segments.back();
+    auto tail = m_body.back();
 
     DisplayInd l_evt;
     l_evt.x = tail.x;
@@ -140,12 +140,12 @@ void Controller::removeTailSegment()
     l_evt.value = Cell_FREE;
     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(l_evt));
 
-    m_segments.pop_back();
+    m_body.pop_back();
 }
 
 void Controller::addHeadSegment(Segment const& newHead)
 {
-    m_segments.push_front(newHead);
+    m_body.push_front(newHead);
 
     DisplayInd placeNewHead;
     placeNewHead.x = newHead.x;
