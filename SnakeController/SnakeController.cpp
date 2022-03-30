@@ -8,6 +8,14 @@
 
 namespace Snake
 {
+
+
+	bool Body::isSegmentAtPosition(int x, int y) const
+	{
+		return end() !=  std::find_if(cbegin(), cend(),
+				[x, y](auto const& segment){ return segment.x == x and segment.y == y; });
+	}
+
 ConfigurationError::ConfigurationError()
     : std::logic_error("Bad configuration of Snake::Controller.")
 {}
@@ -60,12 +68,6 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
     } else {
         throw ConfigurationError();
     }
-}
-
-bool Controller::isSegmentAtPosition(int x, int y) const
-{
-    return m_body.end() !=  std::find_if(m_body.cbegin(), m_body.cend(),
-        [x, y](auto const& segment){ return segment.x == x and segment.y == y; });
 }
 
 bool Controller::isPositionOutsideMap(int x, int y) const
@@ -167,7 +169,7 @@ void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
 
 void Controller::updateSegmentsIfSuccessfullMove(Segment const& newHead)
 {
-    if (isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
+    if (m_body.isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
         m_scorePort.send(std::make_unique<EventT<LooseInd>>());
     } else {
         addHeadSegment(newHead);
@@ -191,7 +193,7 @@ void Controller::handleDirectionInd(std::unique_ptr<Event> e)
 
 void Controller::updateFoodPosition(int x, int y, std::function<void()> clearPolicy)
 {
-    if (isSegmentAtPosition(x, y) || isPositionOutsideMap(x,y)) {
+    if (m_body.isSegmentAtPosition(x, y) || isPositionOutsideMap(x,y)) {
         m_foodPort.send(std::make_unique<EventT<FoodReq>>());
         return;
     }
