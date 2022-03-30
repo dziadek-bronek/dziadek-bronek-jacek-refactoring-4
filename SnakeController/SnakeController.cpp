@@ -29,6 +29,18 @@ namespace Snake
 		pop_back();
 }
 
+void Body::addHeadSegment(Segment const& newHead, IPort& displayPort)
+{
+    push_front(newHead);
+
+    DisplayInd placeNewHead;
+    placeNewHead.x = newHead.x;
+    placeNewHead.y = newHead.y;
+    placeNewHead.value = Cell_SNAKE;
+
+    displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewHead));
+}
+
 ConfigurationError::ConfigurationError()
     : std::logic_error("Bad configuration of Snake::Controller.")
 {}
@@ -145,18 +157,6 @@ Segment Controller::calculateNewHead() const
     return newHead;
 }
 
-void Controller::addHeadSegment(Segment const& newHead)
-{
-    m_body.push_front(newHead);
-
-    DisplayInd placeNewHead;
-    placeNewHead.x = newHead.x;
-    placeNewHead.y = newHead.y;
-    placeNewHead.value = Cell_SNAKE;
-
-    m_displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewHead));
-}
-
 void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
 {
     if (std::make_pair(newHead.x, newHead.y) == m_foodPosition) {
@@ -172,7 +172,7 @@ void Controller::updateSegmentsIfSuccessfullMove(Segment const& newHead)
     if (m_body.isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
         m_scorePort.send(std::make_unique<EventT<LooseInd>>());
     } else {
-        addHeadSegment(newHead);
+        m_body.addHeadSegment(newHead, m_displayPort);
         removeTailSegmentIfNotScored(newHead);
     }
 }

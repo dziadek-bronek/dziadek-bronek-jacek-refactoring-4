@@ -23,8 +23,8 @@ namespace Snake
 	{
 		bool isSegmentAtPosition(int x, int y) const;
 		void removeSegment(IPort& displayPort);
+		void addHeadSegment(Segment const& newHead, IPort& displayPort);
 	};
-
 
 struct ConfigurationError : std::logic_error
 {
@@ -66,7 +66,6 @@ private:
 
     Segment calculateNewHead() const;
     void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void addHeadSegment(Segment const& newHead);
     void removeTailSegmentIfNotScored(Segment const& newHead);
 
     bool isPositionOutsideMap(int x, int y) const;
