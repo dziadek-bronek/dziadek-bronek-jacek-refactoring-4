@@ -22,6 +22,7 @@ namespace Snake
 	struct Body : std::list<Segment>
 	{
 		bool isSegmentAtPosition(int x, int y) const;
+		void removeSegment(IPort& displayPort);
 	};
 
 
@@ -67,7 +68,6 @@ private:
     void updateSegmentsIfSuccessfullMove(Segment const& newHead);
     void addHeadSegment(Segment const& newHead);
     void removeTailSegmentIfNotScored(Segment const& newHead);
-    void removeTailSegment();
 
     bool isPositionOutsideMap(int x, int y) const;
 

@@ -16,6 +16,19 @@ namespace Snake
 				[x, y](auto const& segment){ return segment.x == x and segment.y == y; });
 	}
 
+	void Body::removeSegment(IPort& displayPort)
+	{
+		auto tail = back();
+
+		DisplayInd l_evt;
+		l_evt.x = tail.x;
+		l_evt.y = tail.y;
+		l_evt.value = Cell_FREE;
+		displayPort.send(std::make_unique<EventT<DisplayInd>>(l_evt));
+
+		pop_back();
+}
+
 ConfigurationError::ConfigurationError()
     : std::logic_error("Bad configuration of Snake::Controller.")
 {}
@@ -132,19 +145,6 @@ Segment Controller::calculateNewHead() const
     return newHead;
 }
 
-void Controller::removeTailSegment()
-{
-    auto tail = m_body.back();
-
-    DisplayInd l_evt;
-    l_evt.x = tail.x;
-    l_evt.y = tail.y;
-    l_evt.value = Cell_FREE;
-    m_displayPort.send(std::make_unique<EventT<DisplayInd>>(l_evt));
-
-    m_body.pop_back();
-}
-
 void Controller::addHeadSegment(Segment const& newHead)
 {
     m_body.push_front(newHead);
@@ -163,7 +163,7 @@ void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
         m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
         m_foodPort.send(std::make_unique<EventT<FoodReq>>());
     } else {
-        removeTailSegment();
+        m_body.removeSegment(m_displayPort);
     }
 }
 
