@@ -75,6 +75,42 @@ Segment Body::calculateNewHead(Direction& currentDirection) const
     return newHead;
 }
 
+/*
+void Body::removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition, IPort& scorePort, IPort& foodPort, IPort& displayPort)
+{
+    if (std::make_pair(newHead.x, newHead.y) == foodPosition) {
+        scorePort.send(std::make_unique<EventT<ScoreInd>>());
+        foodPort.send(std::make_unique<EventT<FoodReq>>());
+    } else {
+        removeSegment(displayPort);
+    }
+}
+*/
+
+void Body::updateIfSuccessfullMove(Segment const& newHead, IPort& scorePort, IPort& displayPort, bool isOutsideMap, IPort& foodPort, std::pair<int,int>& foodPosition)
+{
+    if (isSegmentAtPosition(newHead.x, newHead.y) or
+			isOutsideMap // isPositionOutsideMap(newHead.x, newHead.y)
+			) {
+        scorePort.send(std::make_unique<EventT<LooseInd>>());
+    } else {
+        addHeadSegment(newHead, displayPort);
+
+
+
+        // removeSegmentIfNotScored(newHead);
+    if (std::make_pair(newHead.x, newHead.y) == foodPosition) {
+        scorePort.send(std::make_unique<EventT<ScoreInd>>());
+        foodPort.send(std::make_unique<EventT<FoodReq>>());
+    } else {
+        removeSegment(displayPort);
+    }
+
+
+
+    }
+}
+
 ConfigurationError::ConfigurationError()
     : std::logic_error("Bad configuration of Snake::Controller.")
 {}
@@ -156,29 +192,12 @@ void Controller::sendClearOldFood()
     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(clearOldFood));
 }
 
-void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
-{
-    if (std::make_pair(newHead.x, newHead.y) == m_foodPosition) {
-        m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
-        m_foodPort.send(std::make_unique<EventT<FoodReq>>());
-    } else {
-        m_body.removeSegment(m_displayPort);
-    }
-}
-
-void Controller::updateSegmentsIfSuccessfullMove(Segment const& newHead)
-{
-    if (m_body.isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
-        m_scorePort.send(std::make_unique<EventT<LooseInd>>());
-    } else {
-        m_body.addHeadSegment(newHead, m_displayPort);
-        removeTailSegmentIfNotScored(newHead);
-    }
-}
-
 void Controller::handleTimeoutInd()
 {
-    updateSegmentsIfSuccessfullMove(m_body.calculateNewHead(m_currentDirection));
+	auto newHead = m_body.calculateNewHead(m_currentDirection);
+    m_body.updateIfSuccessfullMove(newHead, m_scorePort, m_displayPort,
+			isPositionOutsideMap(newHead.x, newHead.y), m_foodPort, m_foodPosition
+			);
 }
 
 void Controller::handleDirectionInd(std::unique_ptr<Event> e)

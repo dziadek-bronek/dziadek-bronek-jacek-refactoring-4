@@ -25,6 +25,12 @@ namespace Snake
 		void removeSegment(IPort& displayPort);
 		void addHeadSegment(Segment const& newHead, IPort& displayPort);
 		Segment calculateNewHead(Direction& currentDirection) const;
+		/*
+		void removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition,
+				IPort& scorePort, IPort& foodPort, IPort& displayPort)
+		*/
+		void updateIfSuccessfullMove(Segment const& newHead, IPort& scorePort, IPort& displayPort,
+				bool isOutsideMap, IPort& foodPort, std::pair<int,int>& foodPosition);
 	};
 
 struct ConfigurationError : std::logic_error
@@ -65,8 +71,7 @@ private:
     void handleFoodResp(std::unique_ptr<Event>);
     void handlePauseInd(std::unique_ptr<Event>);
 
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void removeTailSegmentIfNotScored(Segment const& newHead);
+    // void removeTailSegmentIfNotScored(Segment const& newHead);
 
     bool isPositionOutsideMap(int x, int y) const;
 
