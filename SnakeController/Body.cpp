@@ -6,14 +6,9 @@
 
 #include "EventT.hpp"
 #include "IPort.hpp"
+#include "Directions.hpp"
 
 namespace Snake {
-
-bool isHorizontal(Direction direction);
-bool isVertical(Direction direction);
-bool isPositive(Direction direction);
-bool perpendicular(Direction dir1, Direction dir2);
-
 Body::Body(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort) :
 	m_displayPort(p_displayPort),
 	m_foodPort(p_foodPort),
