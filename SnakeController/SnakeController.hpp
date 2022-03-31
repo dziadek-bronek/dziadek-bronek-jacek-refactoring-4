@@ -25,12 +25,11 @@ namespace Snake
 		void removeSegment(IPort& displayPort);
 		void addHeadSegment(Segment const& newHead, IPort& displayPort);
 		Segment calculateNewHead(Direction& currentDirection) const;
-		/*
 		void removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition,
-				IPort& scorePort, IPort& foodPort, IPort& displayPort)
-		*/
-		void updateIfSuccessfullMove(Segment const& newHead, IPort& scorePort, IPort& displayPort,
-				bool isOutsideMap, IPort& foodPort, std::pair<int,int>& foodPosition);
+				IPort& scorePort, IPort& foodPort, IPort& displayPort);
+		void updateIfSuccessfullMove(Segment const& newHead, bool isOutsideMap,
+				std::pair<int,int>& foodPosition,
+				IPort& scorePort, IPort& displayPort, IPort& foodPort);
 	};
 
 struct ConfigurationError : std::logic_error

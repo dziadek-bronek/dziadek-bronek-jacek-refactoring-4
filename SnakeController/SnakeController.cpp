@@ -75,7 +75,6 @@ Segment Body::calculateNewHead(Direction& currentDirection) const
     return newHead;
 }
 
-/*
 void Body::removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition, IPort& scorePort, IPort& foodPort, IPort& displayPort)
 {
     if (std::make_pair(newHead.x, newHead.y) == foodPosition) {
@@ -85,29 +84,18 @@ void Body::removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> f
         removeSegment(displayPort);
     }
 }
-*/
 
-void Body::updateIfSuccessfullMove(Segment const& newHead, IPort& scorePort, IPort& displayPort, bool isOutsideMap, IPort& foodPort, std::pair<int,int>& foodPosition)
+void Body::updateIfSuccessfullMove(Segment const& newHead, bool isOutsideMap,
+		std::pair<int,int>& foodPosition,
+		IPort& scorePort, IPort& displayPort, IPort& foodPort)
 {
-    if (isSegmentAtPosition(newHead.x, newHead.y) or
-			isOutsideMap // isPositionOutsideMap(newHead.x, newHead.y)
-			) {
+    if (isSegmentAtPosition(newHead.x, newHead.y)
+			or /*isPositionOutsideMap(newHead.x, newHead.y)*/ isOutsideMap)
+	{
         scorePort.send(std::make_unique<EventT<LooseInd>>());
     } else {
         addHeadSegment(newHead, displayPort);
-
-
-
-        // removeSegmentIfNotScored(newHead);
-    if (std::make_pair(newHead.x, newHead.y) == foodPosition) {
-        scorePort.send(std::make_unique<EventT<ScoreInd>>());
-        foodPort.send(std::make_unique<EventT<FoodReq>>());
-    } else {
-        removeSegment(displayPort);
-    }
-
-
-
+        removeSegmentIfNotScored(newHead, foodPosition, scorePort, foodPort, displayPort);
     }
 }
 
@@ -195,9 +183,8 @@ void Controller::sendClearOldFood()
 void Controller::handleTimeoutInd()
 {
 	auto newHead = m_body.calculateNewHead(m_currentDirection);
-    m_body.updateIfSuccessfullMove(newHead, m_scorePort, m_displayPort,
-			isPositionOutsideMap(newHead.x, newHead.y), m_foodPort, m_foodPosition
-			);
+    m_body.updateIfSuccessfullMove(newHead, isPositionOutsideMap(newHead.x, newHead.y), m_foodPosition,
+			m_scorePort, m_displayPort, m_foodPort);
 }
 
 void Controller::handleDirectionInd(std::unique_ptr<Event> e)
