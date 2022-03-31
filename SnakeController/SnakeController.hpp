@@ -1,16 +1,14 @@
 #pragma once
 
+#include "IEventHandler.hpp"
+#include "SnakeInterface.hpp"
+#include "Body.hpp"
+#include "IPort.hpp"
+
 #include <list>
 #include <memory>
 #include <stdexcept>
 #include <functional>
-
-#include "IEventHandler.hpp"
-#include "SnakeInterface.hpp"
-#include "Body.hpp"
-
-class Event;
-class IPort;
 
 namespace Snake
 {

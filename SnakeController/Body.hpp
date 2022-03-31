@@ -1,8 +1,8 @@
 #pragma once
-#include<list>
 
-class Event;
-class IPort;
+#include<list>
+#include "Directions.hpp"
+#include "IPort.hpp"
 
 namespace Snake {
 

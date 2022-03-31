@@ -1,11 +1,8 @@
 #include "SnakeController.hpp"
+#include "EventT.hpp"
 
 #include <algorithm>
 #include <sstream>
-
-#include "EventT.hpp"
-#include "IPort.hpp"
-#include "Directions.hpp"
 
 namespace Snake
 {

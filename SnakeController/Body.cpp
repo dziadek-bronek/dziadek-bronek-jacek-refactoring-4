@@ -1,12 +1,9 @@
-#include "SnakeInterface.hpp"
 #include "Body.hpp"
+#include "SnakeInterface.hpp"
+#include "EventT.hpp"
 
 #include <algorithm>
 #include <sstream>
-
-#include "EventT.hpp"
-#include "IPort.hpp"
-#include "Directions.hpp"
 
 namespace Snake {
 Body::Body(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort) :
