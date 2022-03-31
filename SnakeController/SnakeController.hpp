@@ -24,13 +24,11 @@ namespace Snake
 		Body(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort);
 		bool isSegmentAtPosition(int x, int y) const;
 		void removeSegment();
-		void addHeadSegment(Segment const& newHead, IPort& displayPort);
+		void addHeadSegment(Segment const& newHead);
 		Segment calculateNewHead(Direction& currentDirection) const;
-		void removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition,
-				IPort& scorePort, IPort& foodPort, IPort& displayPort);
+		void removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition);
 		void updateIfSuccessfullMove(Segment const& newHead, bool isOutsideMap,
-				std::pair<int,int>& foodPosition,
-				IPort& scorePort, IPort& displayPort, IPort& foodPort);
+				std::pair<int,int>& foodPosition);
 		IPort& m_displayPort;
 		IPort& m_foodPort;
 		IPort& m_scorePort;
@@ -64,7 +62,6 @@ private:
     std::pair<int, int> m_mapDimension;
     std::pair<int, int> m_foodPosition;
 
-
     Body m_body;
     Direction m_currentDirection;
 
@@ -73,11 +70,7 @@ private:
     void handleFoodInd(std::unique_ptr<Event>);
     void handleFoodResp(std::unique_ptr<Event>);
     void handlePauseInd(std::unique_ptr<Event>);
-
-    // void removeTailSegmentIfNotScored(Segment const& newHead);
-
     bool isPositionOutsideMap(int x, int y) const;
-
     void updateFoodPosition(int x, int y, std::function<void()> clearPolicy);
     void sendClearOldFood();
     void sendPlaceNewFood(int x, int y);

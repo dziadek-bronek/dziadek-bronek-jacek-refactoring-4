@@ -59,7 +59,7 @@ void Body::removeSegment()
 	pop_back();
 }
 
-void Body::addHeadSegment(Segment const& newHead, IPort& displayPort)
+void Body::addHeadSegment(Segment const& newHead)
 {
     push_front(newHead);
 
@@ -68,7 +68,7 @@ void Body::addHeadSegment(Segment const& newHead, IPort& displayPort)
     placeNewHead.y = newHead.y;
     placeNewHead.value = Cell_SNAKE;
 
-    displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewHead));
+    m_displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewHead));
 }
 
 Segment Body::calculateNewHead(Direction& currentDirection) const
@@ -82,27 +82,26 @@ Segment Body::calculateNewHead(Direction& currentDirection) const
     return newHead;
 }
 
-void Body::removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition, IPort& scorePort, IPort& foodPort, IPort& displayPort)
+void Body::removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition)
 {
     if (std::make_pair(newHead.x, newHead.y) == foodPosition) {
-        scorePort.send(std::make_unique<EventT<ScoreInd>>());
-        foodPort.send(std::make_unique<EventT<FoodReq>>());
+        m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
+        m_foodPort.send(std::make_unique<EventT<FoodReq>>());
     } else {
         removeSegment();
     }
 }
 
 void Body::updateIfSuccessfullMove(Segment const& newHead, bool isOutsideMap,
-		std::pair<int,int>& foodPosition,
-		IPort& scorePort, IPort& displayPort, IPort& foodPort)
+		std::pair<int,int>& foodPosition)
 {
     if (isSegmentAtPosition(newHead.x, newHead.y)
 			or /*isPositionOutsideMap(newHead.x, newHead.y)*/ isOutsideMap)
 	{
-        scorePort.send(std::make_unique<EventT<LooseInd>>());
+        m_scorePort.send(std::make_unique<EventT<LooseInd>>());
     } else {
-        addHeadSegment(newHead, displayPort);
-        removeSegmentIfNotScored(newHead, foodPosition, scorePort, foodPort, displayPort);
+        addHeadSegment(newHead);
+        removeSegmentIfNotScored(newHead, foodPosition);
     }
 }
 
@@ -191,8 +190,7 @@ void Controller::sendClearOldFood()
 void Controller::handleTimeoutInd()
 {
 	auto newHead = m_body.calculateNewHead(m_currentDirection);
-    m_body.updateIfSuccessfullMove(newHead, isPositionOutsideMap(newHead.x, newHead.y), m_foodPosition,
-			m_scorePort, m_displayPort, m_foodPort);
+    m_body.updateIfSuccessfullMove(newHead, isPositionOutsideMap(newHead.x, newHead.y), m_foodPosition);
 }
 
 void Controller::handleDirectionInd(std::unique_ptr<Event> e)
