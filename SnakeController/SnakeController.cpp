@@ -8,6 +8,31 @@
 
 namespace Snake
 {
+
+namespace
+{
+bool isHorizontal(Direction direction)
+{
+    return Direction_LEFT == direction or Direction_RIGHT == direction;
+}
+
+bool isVertical(Direction direction)
+{
+    return Direction_UP == direction or Direction_DOWN == direction;
+}
+
+bool isPositive(Direction direction)
+{
+    return (isVertical(direction) and Direction_DOWN == direction)
+        or (isHorizontal(direction) and Direction_RIGHT == direction);
+}
+
+bool perpendicular(Direction dir1, Direction dir2)
+{
+    return isHorizontal(dir1) == isVertical(dir2);
+}
+} // namespace
+
 bool Body::isSegmentAtPosition(int x, int y) const
 {
 	return end() !=  std::find_if(cbegin(), cend(),
@@ -37,6 +62,17 @@ void Body::addHeadSegment(Segment const& newHead, IPort& displayPort)
     placeNewHead.value = Cell_SNAKE;
 
     displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewHead));
+}
+
+Segment Body::calculateNewHead(Direction& currentDirection) const
+{
+    Segment const& currentHead = front();
+
+    Segment newHead;
+    newHead.x = currentHead.x + (isHorizontal(currentDirection) ? isPositive(currentDirection) ? 1 : -1 : 0);
+    newHead.y = currentHead.y + (isVertical(currentDirection) ? isPositive(currentDirection) ? 1 : -1 : 0);
+
+    return newHead;
 }
 
 ConfigurationError::ConfigurationError()
@@ -120,41 +156,6 @@ void Controller::sendClearOldFood()
     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(clearOldFood));
 }
 
-namespace
-{
-bool isHorizontal(Direction direction)
-{
-    return Direction_LEFT == direction or Direction_RIGHT == direction;
-}
-
-bool isVertical(Direction direction)
-{
-    return Direction_UP == direction or Direction_DOWN == direction;
-}
-
-bool isPositive(Direction direction)
-{
-    return (isVertical(direction) and Direction_DOWN == direction)
-        or (isHorizontal(direction) and Direction_RIGHT == direction);
-}
-
-bool perpendicular(Direction dir1, Direction dir2)
-{
-    return isHorizontal(dir1) == isVertical(dir2);
-}
-} // namespace
-
-Segment Controller::calculateNewHead() const
-{
-    Segment const& currentHead = m_body.front();
-
-    Segment newHead;
-    newHead.x = currentHead.x + (isHorizontal(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
-    newHead.y = currentHead.y + (isVertical(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
-
-    return newHead;
-}
-
 void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
 {
     if (std::make_pair(newHead.x, newHead.y) == m_foodPosition) {
@@ -177,7 +178,7 @@ void Controller::updateSegmentsIfSuccessfullMove(Segment const& newHead)
 
 void Controller::handleTimeoutInd()
 {
-    updateSegmentsIfSuccessfullMove(calculateNewHead());
+    updateSegmentsIfSuccessfullMove(m_body.calculateNewHead(m_currentDirection));
 }
 
 void Controller::handleDirectionInd(std::unique_ptr<Event> e)

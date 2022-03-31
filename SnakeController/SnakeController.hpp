@@ -24,6 +24,7 @@ namespace Snake
 		bool isSegmentAtPosition(int x, int y) const;
 		void removeSegment(IPort& displayPort);
 		void addHeadSegment(Segment const& newHead, IPort& displayPort);
+		Segment calculateNewHead(Direction& currentDirection) const;
 	};
 
 struct ConfigurationError : std::logic_error
@@ -64,7 +65,6 @@ private:
     void handleFoodResp(std::unique_ptr<Event>);
     void handlePauseInd(std::unique_ptr<Event>);
 
-    Segment calculateNewHead() const;
     void updateSegmentsIfSuccessfullMove(Segment const& newHead);
     void removeTailSegmentIfNotScored(Segment const& newHead);
 
