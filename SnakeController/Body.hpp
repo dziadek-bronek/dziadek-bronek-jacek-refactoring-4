@@ -1,4 +1,9 @@
 #pragma once
+
+class Event;
+class IPort;
+
+namespace Snake {
 	struct Segment
 	{
         int x;
@@ -19,5 +24,4 @@
 		IPort& m_foodPort;
 		IPort& m_scorePort;
 	};
-
-
+}

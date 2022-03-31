@@ -7,13 +7,13 @@
 
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
+#include "Body.hpp"
 
 class Event;
 class IPort;
 
 namespace Snake
 {
-#include "Body.hpp"
 struct ConfigurationError : std::logic_error
 {
     ConfigurationError();
