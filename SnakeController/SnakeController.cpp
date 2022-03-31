@@ -6,8 +6,6 @@
 #include "EventT.hpp"
 #include "IPort.hpp"
 
-#include "Body.cpp"
-
 namespace Snake
 {
 namespace
