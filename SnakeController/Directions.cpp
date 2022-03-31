@@ -1,6 +1,7 @@
 #include "SnakeInterface.hpp"
 #include "Directions.hpp"
 namespace Snake {
+
 bool isHorizontal(Direction direction)
 {
     return Direction_LEFT == direction or Direction_RIGHT == direction;
