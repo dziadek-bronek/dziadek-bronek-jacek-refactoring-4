@@ -8,8 +8,6 @@
 
 namespace Snake
 {
-namespace
-{
 bool isHorizontal(Direction direction)
 {
     return Direction_LEFT == direction or Direction_RIGHT == direction;
@@ -30,7 +28,6 @@ bool perpendicular(Direction dir1, Direction dir2)
 {
     return isHorizontal(dir1) == isVertical(dir2);
 }
-} // namespace
 
 ConfigurationError::ConfigurationError()
     : std::logic_error("Bad configuration of Snake::Controller.")
