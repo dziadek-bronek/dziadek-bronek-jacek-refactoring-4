@@ -23,7 +23,7 @@ namespace Snake
 	{
 		Body(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort);
 		bool isSegmentAtPosition(int x, int y) const;
-		void removeSegment(IPort& displayPort);
+		void removeSegment();
 		void addHeadSegment(Segment const& newHead, IPort& displayPort);
 		Segment calculateNewHead(Direction& currentDirection) const;
 		void removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> foodPosition,

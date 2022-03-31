@@ -46,7 +46,7 @@ bool Body::isSegmentAtPosition(int x, int y) const
 			[x, y](auto const& segment){ return segment.x == x and segment.y == y; });
 }
 
-void Body::removeSegment(IPort& displayPort)
+void Body::removeSegment()
 {
 	auto tail = back();
 
@@ -54,7 +54,7 @@ void Body::removeSegment(IPort& displayPort)
 	l_evt.x = tail.x;
 	l_evt.y = tail.y;
 	l_evt.value = Cell_FREE;
-	displayPort.send(std::make_unique<EventT<DisplayInd>>(l_evt));
+	m_displayPort.send(std::make_unique<EventT<DisplayInd>>(l_evt));
 
 	pop_back();
 }
@@ -88,7 +88,7 @@ void Body::removeSegmentIfNotScored(Segment const& newHead, std::pair<int,int> f
         scorePort.send(std::make_unique<EventT<ScoreInd>>());
         foodPort.send(std::make_unique<EventT<FoodReq>>());
     } else {
-        removeSegment(displayPort);
+        removeSegment();
     }
 }
 
