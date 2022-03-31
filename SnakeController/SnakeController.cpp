@@ -6,9 +6,10 @@
 #include "EventT.hpp"
 #include "IPort.hpp"
 
+#include "Body.cpp"
+
 namespace Snake
 {
-
 namespace
 {
 bool isHorizontal(Direction direction)
@@ -32,7 +33,7 @@ bool perpendicular(Direction dir1, Direction dir2)
     return isHorizontal(dir1) == isVertical(dir2);
 }
 } // namespace
-#include "Body.cpp"
+
 ConfigurationError::ConfigurationError()
     : std::logic_error("Bad configuration of Snake::Controller.")
 {}
