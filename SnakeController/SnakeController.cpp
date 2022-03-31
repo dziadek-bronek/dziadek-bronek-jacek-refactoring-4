@@ -33,6 +33,13 @@ bool perpendicular(Direction dir1, Direction dir2)
 }
 } // namespace
 
+Body::Body(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort) :
+	m_displayPort(p_displayPort),
+	m_foodPort(p_foodPort),
+	m_scorePort(p_scorePort)
+{
+}
+
 bool Body::isSegmentAtPosition(int x, int y) const
 {
 	return end() !=  std::find_if(cbegin(), cend(),
@@ -111,6 +118,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
     : m_displayPort(p_displayPort),
       m_foodPort(p_foodPort),
       m_scorePort(p_scorePort),
+	  m_body(p_displayPort, p_foodPort, p_scorePort),
       m_paused(false)
 {
     std::istringstream istr(p_config);

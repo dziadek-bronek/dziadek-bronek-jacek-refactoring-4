@@ -21,6 +21,7 @@ namespace Snake
 
 	struct Body : std::list<Segment>
 	{
+		Body(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort);
 		bool isSegmentAtPosition(int x, int y) const;
 		void removeSegment(IPort& displayPort);
 		void addHeadSegment(Segment const& newHead, IPort& displayPort);
@@ -30,6 +31,9 @@ namespace Snake
 		void updateIfSuccessfullMove(Segment const& newHead, bool isOutsideMap,
 				std::pair<int,int>& foodPosition,
 				IPort& scorePort, IPort& displayPort, IPort& foodPort);
+		IPort& m_displayPort;
+		IPort& m_foodPort;
+		IPort& m_scorePort;
 	};
 
 struct ConfigurationError : std::logic_error
